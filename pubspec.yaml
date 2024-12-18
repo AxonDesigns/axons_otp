@@ -1,0 +1,16 @@
+name: axons_totp
+description: A sample Time-based One-Time Password (TOTP) implementation in pure Dart.
+version: 1.0.0
+repository: https://github.com/AxonDesigns/totp_implementation
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  crypto: ^3.0.6
+  base32: ^2.1.3
+  encrypt: ^5.0.3
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.24.0
