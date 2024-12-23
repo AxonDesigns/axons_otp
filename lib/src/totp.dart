@@ -1,7 +1,4 @@
-import 'dart:math';
-import 'dart:typed_data';
-import 'package:axons_totp/src/base32.dart';
-import 'package:axons_totp/src/hex.dart';
+import 'package:axons_totp/src/htop.dart';
 import 'package:crypto/crypto.dart';
 
 class TOTP {
@@ -22,28 +19,16 @@ class TOTP {
     int offset = 0,
     DateTime? dateTime,
   }) {
-    final effectiveDateTime = dateTime ?? DateTime.now();
-    final seconds = (effectiveDateTime.millisecondsSinceEpoch ~/ 1000) + offset;
-    final int timeCounter = seconds ~/ period;
-    final String hexCounter = timeCounter.toRadixString(16).padLeft(16, '0');
-
-    // Decode secret and convert to bytes
-    final Uint8List decodedSecret = Hex.decode(Base32.toHex(secret));
-
-    // Create HMAC
-    Hmac hmac = Hmac(algorithm, decodedSecret);
-
-    final Uint8List counterBytes = Hex.decode(hexCounter);
-    final List<int> hash = hmac.convert(counterBytes).bytes;
-
-    final int offsetByte = hash[hash.length - 1] & 0xf;
-    final int binaryCode = ((hash[offsetByte] & 0x7f) << 24) |
-        ((hash[offsetByte + 1] & 0xff) << 16) |
-        ((hash[offsetByte + 2] & 0xff) << 8) |
-        (hash[offsetByte + 3] & 0xff);
-
-    final int otp = binaryCode % pow(10, digits).toInt();
-    return otp.toString().padLeft(digits, '0');
+    return HTOP.generate(
+      secret,
+      counter: getTimeCounter(
+        dateTime: dateTime,
+        offset: offset,
+        period: period,
+      ),
+      algorithm: algorithm,
+      digits: digits,
+    );
   }
 
   /// Verifies a Time-based One-Time Password (TOTP) against the provided parameters.<br>
@@ -72,40 +57,33 @@ class TOTP {
     int offset = 0,
     DateTime? dateTime,
   }) {
-    final currentToken = generate(
+    return HTOP.verify(
+      code,
       secret,
+      counter: getTimeCounter(
+        dateTime: dateTime,
+        offset: offset,
+        period: period,
+      ),
       algorithm: algorithm,
       digits: digits,
-      period: period,
-      offset: offset,
-      dateTime: dateTime,
+      tolerance: tolerance,
     );
+  }
 
-    if (currentToken == code) return true;
-
-    for (var i = 1; i < tolerance; i++) {
-      if (code ==
-              generate(
-                secret,
-                algorithm: algorithm,
-                digits: digits,
-                period: period,
-                offset: offset + (i),
-                dateTime: dateTime,
-              ) ||
-          code ==
-              generate(
-                secret,
-                algorithm: algorithm,
-                digits: digits,
-                period: period,
-                offset: offset + (-i),
-                dateTime: dateTime,
-              )) {
-        return true;
-      }
-    }
-
-    return false;
+  /// Returns the current time counter value based on the provided parameters.
+  ///
+  /// [dateTime] - An optional DateTime object to override the current time (default is the system's current time).<br>
+  /// [offset] - An offset in seconds to adjust the time counter (default is 0).<br>
+  /// [period] - The time period in seconds for OTP validity (default is 30 seconds).<br>
+  /// Returns the current time counter value.
+  static int getTimeCounter({
+    DateTime? dateTime,
+    int offset = 0,
+    int period = 30,
+  }) {
+    final effectiveDateTime = dateTime ?? DateTime.now();
+    final seconds = (effectiveDateTime.millisecondsSinceEpoch ~/ 1000) + offset;
+    return seconds ~/ period;
   }
 }
