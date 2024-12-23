@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:axons_totp/src/base32.dart';
-import 'package:axons_totp/src/hex.dart';
+import 'package:axons_otp/src/base32.dart';
+import 'package:axons_otp/src/hex.dart';
 import 'package:crypto/crypto.dart';
 
-class HTOP {
-  /// Generates a One-Time Password (OTP) using the HMAC One-Time Password (HTP) algorithm.
+class HOTP {
+  /// Generates a One-Time Password (OTP) using the HMAC One-Time Password (HOTP) algorithm.<br>
   ///
   /// [secret] The shared secret key, encoded in Base32 format, used for HMAC generation.<br>
   /// [counter] The counter value to be used for the HMAC generation.<br>
@@ -36,7 +36,7 @@ class HTOP {
     return otp.toString().padLeft(digits, '0');
   }
 
-  /// Verifies a HMAC One-Time Password (HTP) against the provided parameters.<br>
+  /// Verifies a HMAC One-Time Password (HOTP) against the provided parameters.<br>
   ///
   /// This method checks whether the given [code] matches the expected OTP for the
   /// provided [secret] and optional parameters, allowing for a tolerance window.<br>

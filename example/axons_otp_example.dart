@@ -1,4 +1,4 @@
-import 'package:axons_totp/axons_totp.dart';
+import 'package:axons_otp/axons_otp.dart';
 
 void main() {
   final String secret = 'JBSWY3DPEHPK3PXP';

@@ -2,7 +2,7 @@
 library;
 
 export 'src/base32.dart';
-export 'src/htop.dart';
+export 'src/hotp.dart';
 export 'src/totp.dart';
 export 'src/hex.dart';
 export 'src/cryptography.dart';

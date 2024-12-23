@@ -1,4 +1,4 @@
-import 'package:axons_totp/axons_totp.dart';
+import 'package:axons_otp/axons_otp.dart';
 import 'package:test/test.dart';
 
 void main() {

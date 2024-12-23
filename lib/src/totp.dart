@@ -1,4 +1,4 @@
-import 'package:axons_totp/src/htop.dart';
+import 'package:axons_otp/src/hotp.dart';
 import 'package:crypto/crypto.dart';
 
 class TOTP {
@@ -19,7 +19,7 @@ class TOTP {
     int offset = 0,
     DateTime? dateTime,
   }) {
-    return HTOP.generate(
+    return HOTP.generate(
       secret,
       counter: getTimeCounter(
         dateTime: dateTime,
@@ -57,7 +57,7 @@ class TOTP {
     int offset = 0,
     DateTime? dateTime,
   }) {
-    return HTOP.verify(
+    return HOTP.verify(
       code,
       secret,
       counter: getTimeCounter(

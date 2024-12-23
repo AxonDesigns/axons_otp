@@ -1,13 +1,13 @@
-# axons_totp  
+# axons_otp  
 
 
-**`axons_totp`** is a versatile Dart package that offers:  
-- A simple and efficient implementation of the Time-Based One-Time Password (TOTP) algorithm.  
+**`axons_otp`** is a versatile Dart package that offers:  
+- A simple and efficient implementation of the Time-Based One-Time Password (TOTP) and HMAC One-Time Password (HOTP) algorithms.  
 - Cryptography utilities for AES encryption and decryption.  
 - `Hex` and `Base32` encoding/decoding utilities for secure data handling and interoperability.  
 
 ## Features  
-- Generate and verify TOTPs compliant with [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238).  
+- Generate and verify OTPs compliant with [RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238).  
 - Encrypt and decrypt data using AES encryption.  
 - Encode and decode data in `Hex` and `Base32` formats.  
 - Generate random secure Base32-encoded strings for secret keys.  
@@ -18,8 +18,16 @@
 Add the package to your `pubspec.yaml` file:  
 ```yaml  
 dependencies:  
-  axons_totp: ^1.0.0  
-```  
+  axons_otp: ^1.0.0  
+```
+or
+```yaml
+dependencies:  
+  axons_otp:
+      git: 
+        url: https://github.com/AxonDesigns/axons_otp.git
+```
+
 
 Then, run:  
 ```bash  
@@ -32,7 +40,7 @@ flutter pub get
 
 #### Generating a TOTP  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 
 void main() {  
   const secret = 'JBSWY3DPEHPK3PXP'; // Base32-encoded secret key  
@@ -44,7 +52,7 @@ void main() {
 
 #### Verifying a TOTP  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 
 void main() {  
   const secret = 'JBSWY3DPEHPK3PXP';  
@@ -53,13 +61,42 @@ void main() {
   final isValid = TOTP.verify(code, secret);  
   print(isValid ? 'Valid OTP' : 'Invalid OTP');  
 }  
+```
+
+### HOTP Functionality  
+
+#### Generating a HOTP  
+```dart  
+import 'package:axons_otp/axons_otp.dart';  
+
+void main() {  
+  const secret = 'JBSWY3DPEHPK3PXP'; // Base32-encoded secret key  
+  const counter = 0; // The counter value to be used for the HMAC generation
+
+  final otp = HOTP.generate(secret, counter: counter);  
+  print('Generated OTP: $otp');  
+}  
 ```  
+
+#### Verifying a HOTP  
+```dart  
+import 'package:axons_otp/axons_otp.dart';  
+
+void main() {  
+  const secret = 'JBSWY3DPEHPK3PXP';  
+  const code = '123456';
+  const counter = 0;
+
+  final isValid = HOTP.verify(code, secret, counter: counter);  
+  print(isValid ? 'Valid OTP' : 'Invalid OTP');  
+}  
+```
 
 ### Cryptography Utilities  
 
 #### Encrypting a String  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 
 void main() {  
   const value = 'SensitiveData';  
@@ -72,7 +109,7 @@ void main() {
 
 #### Decrypting a String  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 
 void main() {  
   const encryptedValue = '...';  // Replace with an actual encrypted base64 string  
@@ -87,7 +124,7 @@ void main() {
 
 #### Hex Encoding and Decoding  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 import 'dart:typed_data';  
 
 void main() {  
@@ -102,7 +139,7 @@ void main() {
 
 #### Base32 Encoding and Decoding  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 import 'dart:typed_data';  
 
 void main() {  
@@ -117,7 +154,7 @@ void main() {
 
 #### Generating a Random Base32 String  
 ```dart  
-import 'package:axons_totp/axons_totp.dart';  
+import 'package:axons_otp/axons_otp.dart';  
 
 void main() {  
   final randomString = Base32.random(length: 16);  
@@ -130,6 +167,10 @@ void main() {
 #### `TOTP` Class  
 - **`generate`**: Generates a TOTP based on the provided parameters.  
 - **`verify`**: Verifies a TOTP with a specified tolerance for clock drift.  
+
+#### `HOTP` Class  
+- **`generate`**: Generates a HOTP based on the provided parameters.  
+- **`verify`**: Verifies a HOTP with a specified tolerance for counter drift.
 
 #### `Cryptography` Class  
 - **`encrypt`**: Encrypts a string using AES encryption.  
