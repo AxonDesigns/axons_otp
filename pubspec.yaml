@@ -1,5 +1,5 @@
-name: axons_totp
-description: A sample Time-based One-Time Password (TOTP) implementation in pure Dart.
+name: axons_otp
+description: A simple implementation for Time-based One-Time Password (TOTP) and HMAC One-Time Password (HOTP) in pure Dart.
 version: 1.0.0
 repository: https://github.com/AxonDesigns/totp_implementation
 
